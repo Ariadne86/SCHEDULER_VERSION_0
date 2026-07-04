@@ -14,9 +14,12 @@ from config.prensas import (
     MAX_DIFERENCIA_TIEMPO, MAX_DIFERENCIA_PRESION
 )
 from src.scheduler import (
-    programar_ordenes, generar_resumen_carga, generar_resumen_pisos,
-    calcular_eficiencia_emparejamiento, validar_orden
+    generar_resumen_carga,
+    generar_resumen_pisos,
+    calcular_eficiencia_emparejamiento,
+    validar_orden,
 )
+from src.services.scheduler_service import SchedulerService
 
 
 def main():
@@ -136,7 +139,7 @@ def main():
 
             if st.button("🔄 Programar Órdenes", type="primary"):
                 with st.spinner("Programando con algoritmo de pisos emparejados..."):
-                    df_asignaciones = programar_ordenes(df_ordenes, estrategia)
+                    df_asignaciones = SchedulerService().generate_schedule(df_ordenes, estrategia)
 
                 st.session_state["asignaciones"] = df_asignaciones
                 st.session_state["ordenes"] = df_ordenes

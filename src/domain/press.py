@@ -9,17 +9,15 @@ class Press:
     """Representa una prensa industrial del área de producción.
 
     Attributes:
-        id:            Identificador único de la prensa (ej. "P1").
+        id:            Identificador único de la prensa.
         name:          Nombre descriptivo de la prensa.
-        width:         Ancho útil en milímetros (dimensión X).
-        length:        Largo útil en milímetros (dimensión Y).
-        hourly_cost:   Costo de operación por hora en la moneda base.
-        status:        Estado operativo de la prensa. Valores posibles:
-                       "AVAILABLE" (libre) o "BUSY" (ocupada).
-        floors:        Lista de pisos asociados a esta prensa.
-        current_order: Identificador de la orden asignada actualmente,
-                       o None si la prensa está libre.
-        current_molds: Lista de moldes instalados en el ciclo actual.
+        width:         Ancho útil en milímetros.
+        length:        Largo útil en milímetros.
+        hourly_cost:   Costo de operación por hora.
+        status:        Estado operativo ("AVAILABLE" o "BUSY").
+        floors:        Lista de pisos asociados.
+        current_order: Identificador de la orden actual, o None.
+        current_molds: Lista de moldes instalados.
     """
 
     id: str
@@ -33,59 +31,50 @@ class Press:
     current_molds: list = field(default_factory=list)
 
     def can_fit(self, mold_width: int, mold_length: int) -> bool:
-        """Indica si un molde de las dimensiones dadas cabe en esta prensa.
+        """Indica si un molde cabe en la prensa.
 
         Args:
             mold_width:  Ancho del molde en milímetros.
             mold_length: Largo del molde en milímetros.
 
         Returns:
-            True si el molde no excede ninguna dimensión útil de la prensa.
+            True si el molde no excede las dimensiones de la prensa.
         """
         return mold_width <= self.width and mold_length <= self.length
 
     def is_available(self) -> bool:
-        """Indica si la prensa está disponible para recibir una nueva orden.
+        """Indica si la prensa está disponible.
 
         Returns:
-            True únicamente cuando el estado es "AVAILABLE".
+            True únicamente cuando status == "AVAILABLE".
         """
         return self.status == "AVAILABLE"
 
     def assign_order(self, order_id: str) -> None:
-        """Asigna una orden a la prensa y la marca como ocupada.
+        """Asigna una orden a la prensa.
 
         Args:
-            order_id: Identificador único de la orden a asignar.
+            order_id: Identificador de la orden.
         """
         self.current_order = order_id
         self.status = "BUSY"
 
     def release(self) -> None:
-        """Libera la prensa y la deja disponible para una nueva orden.
-
-        Elimina la referencia a la orden actual y restablece el estado
-        a "AVAILABLE".
-        """
+        """Libera la prensa y la deja disponible."""
         self.current_order = None
         self.status = "AVAILABLE"
 
     def calculate_hourly_cost(self, hours: float) -> float:
-        """Calcula el costo de operar la prensa durante un número de horas.
+        """Calcula el costo de operar durante un número de horas.
 
         Args:
-            hours: Duración de la operación en horas.
+            hours: Duración en horas.
 
         Returns:
-            Costo total resultante de multiplicar el costo horario por las horas.
+            Costo total (hourly_cost * hours).
         """
         return self.hourly_cost * hours
 
     def __repr__(self) -> str:
-        """Representación legible de la prensa.
-
-        Returns:
-            Cadena con el formato Press({id},{width}x{length},{status}).
-            Ejemplo: Press(P1,1200x600,BUSY)
-        """
+        """Representación legible de la prensa."""
         return f"Press({self.id},{self.width}x{self.length},{self.status})"

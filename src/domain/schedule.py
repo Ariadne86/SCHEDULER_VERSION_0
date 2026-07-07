@@ -1,4 +1,4 @@
-"""Modelo de dominio: Programación de producción resultante."""
+"""Modelo de dominio: Programación de producción."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -7,18 +7,12 @@ from typing import Any, Dict, List
 
 @dataclass
 class Schedule:
-    """Contiene el resultado completo de una programación de producción.
-
-    Agrupa todas las asignaciones generadas por el motor de scheduling e
-    incluye métricas consolidadas como costo total y makespan.
+    """Contiene el resultado de una programación de producción.
 
     Attributes:
-        assignments: Lista de asignaciones realizadas. Cada elemento es un
-                     diccionario con las claves producidas por el scheduler
-                     (orden_id, prensa_id, piso_id, inicio, fin, etc.).
-        total_cost:  Costo total acumulado de todas las asignaciones.
-        makespan:    Duración total del plan en horas (diferencia entre el
-                     inicio más temprano y el fin más tardío).
+        assignments: Lista de asignaciones realizadas.
+        total_cost:  Costo total acumulado.
+        makespan:    Duración total del plan en horas.
     """
 
     assignments: List[Dict[str, Any]] = field(default_factory=list)
@@ -26,21 +20,19 @@ class Schedule:
     makespan: float = 0.0
 
     def add_assignment(self, assignment: Dict[str, Any]) -> None:
-        """Agrega una asignación al plan y actualiza las métricas.
+        """Agrega una asignación al plan.
 
         Args:
-            assignment: Diccionario con los datos de la asignación.
-                        Se espera que contenga al menos "costo_total".
+            assignment: Diccionario con datos de la asignación.
         """
         self.assignments.append(assignment)
         self.total_cost = self.calculate_cost()
 
     def calculate_cost(self) -> float:
-        """Calcula el costo total sumando todas las asignaciones vigentes.
+        """Calcula el costo total de todas las asignaciones.
 
         Returns:
-            Suma de los valores "costo_total" de cada asignación.
-            Las entradas sin ese campo se ignoran.
+            Suma de los valores 'costo_total' de cada asignación.
         """
         return sum(
             a.get("costo_total", 0.0) or 0.0

@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 
+from .enums import OrderStatus
 from .product import Product
 
 
@@ -26,7 +27,7 @@ class ProductionOrder:
     quantity: int
     due_date: datetime
     priority: int = 3
-    status: str = "pending"
+    status: OrderStatus = OrderStatus.PENDING
     produced_quantity: int = field(default=0, compare=False)
 
     def remaining_quantity(self) -> int:

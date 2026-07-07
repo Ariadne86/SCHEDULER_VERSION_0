@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from .enums import MoldStatus
+
 
 @dataclass
 class Mold:
@@ -10,7 +12,7 @@ class Mold:
 
     Attributes:
         id:           Identificador único del molde.
-        product_code:  Código del producto para el que está diseñado.
+        product_code: Código del producto para el que está diseñado.
         width:        Ancho del molde en milímetros.
         length:       Largo del molde en milímetros.
         setup_time:   Tiempo de instalación en horas.
@@ -24,4 +26,4 @@ class Mold:
     length: int
     setup_time: float
     heating_time: float
-    status: str = "available"
+    status: MoldStatus = MoldStatus.AVAILABLE

@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from .enums import PressStatus
+
 
 @dataclass
 class Press:
@@ -14,7 +16,7 @@ class Press:
         width:         Ancho útil en milímetros.
         length:        Largo útil en milímetros.
         hourly_cost:   Costo de operación por hora.
-        status:        Estado operativo ("AVAILABLE" o "BUSY").
+        status:        Estado operativo de la prensa.
         floors:        Lista de pisos asociados.
         current_order: Identificador de la orden actual, o None.
         current_molds: Lista de moldes instalados.
@@ -25,7 +27,7 @@ class Press:
     width: int
     length: int
     hourly_cost: float
-    status: str = "AVAILABLE"
+    status: PressStatus = PressStatus.AVAILABLE
     floors: list = field(default_factory=list)
     current_order: str | None = None
     current_molds: list = field(default_factory=list)
@@ -46,9 +48,9 @@ class Press:
         """Indica si la prensa está disponible.
 
         Returns:
-            True únicamente cuando status == "AVAILABLE".
+            True únicamente cuando status es PressStatus.AVAILABLE.
         """
-        return self.status == "AVAILABLE"
+        return self.status == PressStatus.AVAILABLE
 
     def assign_order(self, order_id: str) -> None:
         """Asigna una orden a la prensa.
@@ -57,12 +59,12 @@ class Press:
             order_id: Identificador de la orden.
         """
         self.current_order = order_id
-        self.status = "BUSY"
+        self.status = PressStatus.PRODUCING
 
     def release(self) -> None:
         """Libera la prensa y la deja disponible."""
         self.current_order = None
-        self.status = "AVAILABLE"
+        self.status = PressStatus.AVAILABLE
 
     def calculate_hourly_cost(self, hours: float) -> float:
         """Calcula el costo de operar durante un número de horas.
@@ -77,4 +79,4 @@ class Press:
 
     def __repr__(self) -> str:
         """Representación legible de la prensa."""
-        return f"Press({self.id},{self.width}x{self.length},{self.status})"
+        return f"Press({self.id},{self.width}x{self.length},{self.status.value})"

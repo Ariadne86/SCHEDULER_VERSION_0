@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from .enums import FloorStatus
 from .mold import Mold
@@ -38,3 +38,25 @@ class Floor:
             True cuando el estado es FREE y no hay molde instalado.
         """
         return self.status == FloorStatus.FREE and self.current_mold is None
+
+    def assign_mold(self, mold: Mold) -> None:
+        """Asigna un molde al piso y cambia el estado a SETUP.
+
+        Args:
+            mold: Instancia de Mold a instalar en el piso.
+        """
+        self.current_mold = mold
+        self.status = FloorStatus.SETUP
+
+    def release_mold(self) -> None:
+        """Libera el molde del piso y restablece el estado a FREE."""
+        self.current_mold = None
+        self.status = FloorStatus.FREE
+
+    def is_occupied(self) -> bool:
+        """Indica si el piso tiene un molde instalado.
+
+        Returns:
+            True si hay un molde asignado al piso.
+        """
+        return self.current_mold is not None
